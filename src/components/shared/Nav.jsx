@@ -17,8 +17,8 @@ const navLinks = [
 
 const Nav = () => {
   return (
-    <nav className="sm:px-16 px-6 w-full flex items-center py-5 fixed top-0 z-20 bg-black">
-      <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
+    <nav className="px-6 w-full flex items-center py-5 fixed top-0 z-20">
+      <div className="w-full flex justify-between items-center">
         <div>
           <Link to="/" className="flex items-center">
             <img src="./logo.png" alt="98Labs" className="w-28" />
@@ -28,7 +28,7 @@ const Nav = () => {
           {navLinks.map((nav) => (
             <li
               key={nav.id}
-              className="text-secondary hover:text-white cursor-pointer"
+              className="text-white hover:text-secondary cursor-pointer"
             >
               <a href={`#${nav.id}`}>{nav.title}</a>
             </li>
