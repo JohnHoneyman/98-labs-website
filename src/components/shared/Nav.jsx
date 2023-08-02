@@ -17,7 +17,7 @@ const navLinks = [
 
 const Nav = () => {
   return (
-    <nav className="px-6 w-full flex items-center py-5 fixed top-0 z-20">
+    <nav className="bg-transparent px-6 w-full flex items-center py-5 fixed top-0 z-20">
       <div className="w-full flex justify-between items-center">
         <div>
           <Link to="/" className="flex items-center">
