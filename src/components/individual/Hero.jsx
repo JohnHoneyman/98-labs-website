@@ -4,7 +4,8 @@ import HeroCanvas from "../canvas/Hero/HeroCanvas";
 const Hero = () => {
   return (
     <>
-      <section className="mx-auto relative z-0 bg-[#0e1111]">
+      {/* <section className="mx-auto relative z-0 bg-[#0e1111]"> */}
+      <section className="mx-auto">
         <div className="flex justify-center items-center h-screen">
           {/* <div className="flex-[4_4_0%]">
             <div className="mb-8 font-semibold tracking-wider text-7xl text-white bg-transparent">
@@ -18,7 +19,7 @@ const Hero = () => {
               </p>
             </div>
           </div> */}
-          <div className="border h-full w-full">
+          <div className="h-full w-full">
             <HeroCanvas />
           </div>
         </div>
