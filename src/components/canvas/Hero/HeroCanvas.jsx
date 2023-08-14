@@ -1,23 +1,15 @@
 import {
-  AccumulativeShadows,
-  Backdrop,
   ContactShadows,
   Environment,
   Float,
   Html,
   Lightformer,
   OrbitControls,
-  RandomizedLight,
-  SpotLight,
-  useHelper,
 } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
-import { LayerMaterial, Depth, Noise as LNoise } from "lamina";
-import { useControls } from "leva";
-import { BlendFunction } from "postprocessing";
-import { Perf } from "r3f-perf";
-import { forwardRef, useEffect, useMemo, useRef } from "react";
+import { EffectComposer, Noise } from "@react-three/postprocessing";
+
+import { useRef } from "react";
 import * as THREE from "three";
 
 const HtmlContent = () => {
