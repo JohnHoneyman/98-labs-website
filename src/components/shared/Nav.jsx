@@ -24,7 +24,7 @@ const Nav = () => {
             <img src="./logo.png" alt="98Labs" className="w-28" />
           </Link>
         </div>
-        <ul className="flex gap-10 items-center text-white text-lg font-semibold tracking-widest">
+        {/* <ul className="flex gap-10 items-center text-white text-lg font-semibold tracking-widest">
           {navLinks.map((nav) => (
             <li
               key={nav.id}
@@ -33,7 +33,7 @@ const Nav = () => {
               <a href={`#${nav.id}`}>{nav.title}</a>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </nav>
   );
