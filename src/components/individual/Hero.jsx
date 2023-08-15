@@ -27,9 +27,9 @@ const Hero = () => {
   return (
     <>
       <section className="mx-auto w-screen h-screen">
-        <Overlay />
-        <div className="fixed h-full w-full -z-10">
-          {/* <div className=" h-full w-full -z-10"> */}
+        {/* <Overlay /> */}
+        {/* <div className="fixed h-full w-full -z-10"> */}
+        <div className=" h-full w-full -z-10">
           <HeroCanvas />
         </div>
       </section>

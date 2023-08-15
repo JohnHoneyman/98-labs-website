@@ -2,26 +2,26 @@ import {
   ContactShadows,
   Environment,
   Float,
-  Html,
   Lightformer,
   OrbitControls,
   PerspectiveCamera,
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Noise } from "@react-three/postprocessing";
+import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import CameraRig from "./CameraRig";
 
 const Composer = () => {
   return (
     <EffectComposer>
-      {/* <Vignette
+      <Vignette
         offset={0.2}
         darkness={0.8}
         // eskil={false}
         // blendFunction={BlendFunction.SOFT_LIGHT}
-      /> */}
+      />
       <Noise opacity={0.4} blendFunction={THREE.AdditiveBlending} premultiply />
     </EffectComposer>
   );
@@ -29,16 +29,7 @@ const Composer = () => {
 
 const Mesh = ({ vec = new THREE.Vector3() }) => {
   const mesh = useRef();
-  const viewport = useThree((state) => state.viewport);
-  const [[mouseX, mouseY], setMousePos] = useState([0, 0]);
 
-  const handleMousePos = (e) => {
-    setMousePos([e.clientX, e.clientY]);
-  };
-
-  useEffect(() => {
-    window.addEventListener("mousemove", handleMousePos);
-  }, []);
   // TODO: DREI CAMERA CONTROLS
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
@@ -83,6 +74,13 @@ const LightFormers = () => {
         position={[5, 7, -9]}
         scale={[10, 10, 1]}
       />
+      {/* <Lightformer
+        color={"#ff0000"}
+        intensity={0.75}
+        rotation-x={Math.PI / 2}
+        position={[-8, 5, -5]}
+        scale={[10, 10, 1]}
+      /> */}
     </>
   );
 };
@@ -100,31 +98,30 @@ const Particles = () => {
   return (
     <>
       <group>
-        <mesh></mesh>
+        <mesh>
+          <icosahedronGeometry args={[1, 0]} />
+          <meshStandardMaterial color="#ffffff" wire />
+        </mesh>
       </group>
     </>
   );
 };
 
 const Camera = (props) => {
-  return (
-    <PerspectiveCamera
-      makeDefault
-      {...props}
-      position={[0, -5, -5]}
-    ></PerspectiveCamera>
-  );
+  return <PerspectiveCamera makeDefault {...props} position={[0, -5, -5]} />;
 };
 
 const Hero = () => {
   return (
     <>
-      <Camera />
-      <OrbitControls />
-      <Composer />
-      <Lights />
-      <Mesh />
       <Env />
+      <CameraRig>
+        {/* <OrbitControls /> */}
+        <Composer />
+        <Lights />
+        <Mesh />
+        <Particles />
+      </CameraRig>
     </>
   );
 };
@@ -135,7 +132,7 @@ const HeroCanvas = (props) => {
       shadows
       dpr={[1, 2]}
       camera={{ near: 0.1, far: 200, position: [0, 0, 10], fov: 45 }}
-      className="touch-none "
+      className="touch-none"
     >
       <Hero />
     </Canvas>
