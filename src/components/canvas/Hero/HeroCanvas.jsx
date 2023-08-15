@@ -5,33 +5,13 @@ import {
   Html,
   Lightformer,
   OrbitControls,
+  PerspectiveCamera,
 } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Noise } from "@react-three/postprocessing";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-
-const HtmlContent = () => {
-  return (
-    <Html
-      fullscreen
-      className="max-w-screen-2xl flex items-center justify-center"
-    >
-      <div className="flex flex-col items-center justify-center text-white select-none">
-        <div className="text-8xl font-bold uppercase">Promoting businesses</div>
-        <div className="text-center text-gray-100 translate-y-10">
-          Expand your reach. Establish your presence online.
-        </div>
-        {/* <div className="text-center text-gray-300 translate-y-10">
-          We can help you reach out, get feedback and build your online
-          community through Internet-based marketing and social media. Expand
-          your reach. Establish your online presence.
-        </div> */}
-      </div>
-    </Html>
-  );
-};
 
 const Composer = () => {
   return (
@@ -47,21 +27,31 @@ const Composer = () => {
   );
 };
 
-const Mesh = () => {
+const Mesh = ({ vec = new THREE.Vector3() }) => {
   const mesh = useRef();
+  const viewport = useThree((state) => state.viewport);
+  const [[mouseX, mouseY], setMousePos] = useState([0, 0]);
 
+  const handleMousePos = (e) => {
+    setMousePos([e.clientX, e.clientY]);
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMousePos);
+  }, []);
+  // TODO: DREI CAMERA CONTROLS
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    mesh.current.rotation.y = Math.sin(time * 0.2) + 1;
-    mesh.current.rotation.x = Math.cos(time * 0.2) + 1;
+    mesh.current.rotation.y = Math.sin(time * 0.05) + 1;
+    mesh.current.rotation.x = Math.cos(time * 0.05) + 1;
   });
 
   return (
     <group scale={[3, 3, 3]} position-y={-3}>
-      <Float speed={2} rotationIntensity={2} floatIntensity={2}>
+      <Float speed={0.5} rotationIntensity={2} floatIntensity={2}>
         <mesh ref={mesh} castShadow receiveShadow>
-          <torusKnotGeometry args={[1, 0.25, 256, 24, 1, 3]} />
-          <meshStandardMaterial color="#f00" />
+          <torusKnotGeometry args={[1, 0.25, 128, 24, 1, 3]} />
+          <meshStandardMaterial color="#ff0000" wireframe />
         </mesh>
       </Float>
       <ContactShadows
@@ -106,13 +96,32 @@ const Lights = () => {
   );
 };
 
+const Particles = () => {
+  return (
+    <>
+      <group>
+        <mesh></mesh>
+      </group>
+    </>
+  );
+};
+
+const Camera = (props) => {
+  return (
+    <PerspectiveCamera
+      makeDefault
+      {...props}
+      position={[0, -5, -5]}
+    ></PerspectiveCamera>
+  );
+};
+
 const Hero = () => {
   return (
     <>
-      {/* <Perf position="bottom-left" /> */}
+      <Camera />
       <OrbitControls />
       <Composer />
-      <HtmlContent />
       <Lights />
       <Mesh />
       <Env />
@@ -120,11 +129,13 @@ const Hero = () => {
   );
 };
 
-const HeroCanvas = () => {
+const HeroCanvas = (props) => {
   return (
     <Canvas
+      shadows
       dpr={[1, 2]}
       camera={{ near: 0.1, far: 200, position: [0, 0, 10], fov: 45 }}
+      className="touch-none "
     >
       <Hero />
     </Canvas>

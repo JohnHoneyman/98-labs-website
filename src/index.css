@@ -18,6 +18,16 @@
   display: none;
 }
 
+html,
+body,
+#root,
+.container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .hash-span {
   margin-top: -150px;
   padding-bottom: 100px;
