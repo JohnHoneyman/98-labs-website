@@ -27,7 +27,6 @@ import CameraRig from "../shared/CameraRig";
 import { useControls } from "leva";
 import { Loader } from "../Loader";
 import About from "../../individual/About";
-import { Overlay } from "../../individual/Hero";
 
 const Composer = () => {
   return (
@@ -63,13 +62,6 @@ const Mesh = ({ vec = new THREE.Vector3() }) => {
           <meshStandardMaterial color="#ff0000" wireframe />
         </mesh>
       </Float>
-      <ContactShadows
-        scale={100}
-        blur={1}
-        opacity={1}
-        far={10}
-        position-y={-2}
-      />
     </group>
   );
 };
@@ -139,19 +131,12 @@ const HeroScene = () => {
     <>
       <Composer />
       <Env />
-      <Suspense fallback={<Loader />}>
-        <ScrollControls pages={6} damping={0.4}>
-          <Scroll>
-            <CameraRig>
-              {/* <OrbitControls /> */}
-              <Lights />
-              <Mesh />
-              <Particles />
-            </CameraRig>
-          </Scroll>
-          <Scroll html></Scroll>
-        </ScrollControls>
-      </Suspense>
+      <CameraRig>
+        {/* <OrbitControls /> */}
+        <Lights />
+        <Mesh />
+        <Particles />
+      </CameraRig>
     </>
   );
 };

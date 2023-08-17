@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { SectionWrapper } from "../hoc";
-
 const aboutContent = [
   {
     caption: "Extraordinary work from the ordinary people",
@@ -17,30 +14,15 @@ const aboutContent = [
 ];
 
 const About = () => {
-  const [itemNo, setItemNo] = useState(0);
-
-  const handleSetItemNo = () => {
-    // if (window.scrollY < 1000) return setItemNo(0);
-    // if (window.scrollY < 1900) return setItemNo(1);
-    // return setItemNo(2);
-    if (window.scrollY > 1900) return setItemNo(2);
-    if (window.scrollY > 1000) return setItemNo(1);
-    return setItemNo(0);
-  };
-  // 702 - 930
-  useEffect(() => {
-    window.addEventListener("scroll", handleSetItemNo);
-    window.addEventListener("scroll", () => console.log(window.scrollY));
-  }, []);
-
   return (
-    <div className="flex items-center justify-center text-white">
+    <div className="flex items-center justify-center bg-gray-950 text-white mt-40">
       <ul className="w-11/12 relative">
         {aboutContent.map((item, index) => (
           <li
             key={index}
             className={`h-screen w-11/12 mx-auto flex flex-col justify-center gap-3 transition-all ease duration-[2000ms] ${
-              index !== itemNo && "invisible opacity-0"
+              // index !== itemNo && "invisible opacity-0"
+              ""
             }`}
           >
             <div className="font-semibold text-7xl w-11/12 leading-none uppercase">
@@ -55,6 +37,3 @@ const About = () => {
 };
 
 export default About;
-// const AboutPage = SectionWrapper(About, "about");
-
-// export default AboutPage;
