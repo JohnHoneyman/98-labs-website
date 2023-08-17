@@ -4,7 +4,7 @@ import About from "./About";
 //max-w-[1400px]
 const Overlay = () => {
   return (
-    <div className="absolute top-0 left-0 w-full h-full">
+    <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
       <div className="flex flex-col justify-center items-center h-full select-none">
         <div className="text-8xl text-white tracking-wide font-semibold uppercase">
           Promoting businesses
@@ -27,11 +27,11 @@ const Hero = () => {
   return (
     <>
       <section className="mx-auto w-screen h-screen">
-        {/* <Overlay /> */}
-        {/* <div className="fixed h-full w-full -z-10"> */}
-        <div className=" h-full w-full -z-10">
+        <div className="fixed h-full w-full">
+          {/* <div className="relative h-full w-full"> */}
           <HeroCanvas />
         </div>
+        <Overlay />
       </section>
     </>
   );

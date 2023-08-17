@@ -17,6 +17,7 @@ module.exports = {
     "react/no-unescaped-entities": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
+    "react-hooks/exhaustive-deps": "off",
     "no-unused-vars": "off",
     "no-undef": "off",
     "no-useless-escape": "off",

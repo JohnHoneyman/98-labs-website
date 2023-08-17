@@ -2,16 +2,28 @@ import {
   ContactShadows,
   Environment,
   Float,
+  Html,
   Lightformer,
+  Line,
   OrbitControls,
   PerspectiveCamera,
+  Point,
+  PointMaterial,
+  Points,
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
+import {
+  DepthOfField,
+  EffectComposer,
+  Noise,
+  Vignette,
+} from "@react-three/postprocessing";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import CameraRig from "./CameraRig";
+import { useControls } from "leva";
+import { Loader } from "../Loader";
 
 const Composer = () => {
   return (
@@ -23,14 +35,16 @@ const Composer = () => {
         // blendFunction={BlendFunction.SOFT_LIGHT}
       />
       <Noise opacity={0.4} blendFunction={THREE.AdditiveBlending} premultiply />
+      <DepthOfField focusDistance={0.04} focalLength={0.025} bokehScale={5} />
     </EffectComposer>
   );
 };
 
+// TODO: Particles and Blur
+
 const Mesh = ({ vec = new THREE.Vector3() }) => {
   const mesh = useRef();
 
-  // TODO: DREI CAMERA CONTROLS
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
     mesh.current.rotation.y = Math.sin(time * 0.05) + 1;
@@ -74,13 +88,6 @@ const LightFormers = () => {
         position={[5, 7, -9]}
         scale={[10, 10, 1]}
       />
-      {/* <Lightformer
-        color={"#ff0000"}
-        intensity={0.75}
-        rotation-x={Math.PI / 2}
-        position={[-8, 5, -5]}
-        scale={[10, 10, 1]}
-      /> */}
     </>
   );
 };
@@ -95,33 +102,47 @@ const Lights = () => {
 };
 
 const Particles = () => {
+  const positions = Array.from({ length: 10 }, (i) => [
+    THREE.MathUtils.randFloatSpread(8),
+    THREE.MathUtils.randFloatSpread(8),
+    THREE.MathUtils.randFloatSpread(8),
+  ]);
+
   return (
     <>
-      <group>
-        <mesh>
-          <icosahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial color="#ffffff" wire />
-        </mesh>
-      </group>
+      <Points limit={positions.length}>
+        <PointMaterial
+          vertexColors
+          size={10}
+          sizeAttenuation={false}
+          depthWrite={false}
+          toneMapped={false}
+        />
+        {positions.map((position, i) => (
+          <Point key={i} index={i} position={position} color="#ff0000"></Point>
+        ))}
+      </Points>
     </>
   );
 };
 
-const Camera = (props) => {
-  return <PerspectiveCamera makeDefault {...props} position={[0, -5, -5]} />;
-};
+function PointEvent({ index, ...props }) {
+  return <Point {...props} color="#ff0000"></Point>;
+}
 
 const Hero = () => {
   return (
     <>
+      {/* <Composer /> */}
       <Env />
-      <CameraRig>
-        {/* <OrbitControls /> */}
-        <Composer />
-        <Lights />
-        <Mesh />
-        <Particles />
-      </CameraRig>
+      <Suspense fallback={<Loader />}>
+        <CameraRig>
+          {/* <OrbitControls /> */}
+          <Lights />
+          <Mesh />
+          <Particles />
+        </CameraRig>
+      </Suspense>
     </>
   );
 };
@@ -131,7 +152,7 @@ const HeroCanvas = (props) => {
     <Canvas
       shadows
       dpr={[1, 2]}
-      camera={{ near: 0.1, far: 200, position: [0, 0, 10], fov: 45 }}
+      camera={{ near: 0.1, far: 200, position: [0, 0, 4], fov: 45 }}
       className="touch-none"
     >
       <Hero />
