@@ -1,8 +1,9 @@
-import HeroCanvas from "../canvas/Hero/HeroCanvas";
+import HeroScene from "../canvas/Hero/HeroScene";
+import MainCanvas from "../canvas/MainCanvas";
 import About from "./About";
 
 //max-w-[1400px]
-const Overlay = () => {
+export const Overlay = () => {
   return (
     <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
       <div className="flex flex-col justify-center items-center h-full select-none">
@@ -29,7 +30,7 @@ const Hero = () => {
       <section className="mx-auto w-screen h-screen">
         <div className="fixed h-full w-full">
           {/* <div className="relative h-full w-full"> */}
-          <HeroCanvas />
+          <MainCanvas />
         </div>
         <Overlay />
       </section>

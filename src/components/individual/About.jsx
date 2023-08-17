@@ -34,7 +34,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center bg-black text-white">
+    <div className="flex items-center justify-center text-white">
       <ul className="w-11/12 relative">
         {aboutContent.map((item, index) => (
           <li

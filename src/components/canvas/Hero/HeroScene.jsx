@@ -10,6 +10,8 @@ import {
   Point,
   PointMaterial,
   Points,
+  Scroll,
+  ScrollControls,
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
@@ -21,9 +23,11 @@ import {
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import CameraRig from "./CameraRig";
+import CameraRig from "../shared/CameraRig";
 import { useControls } from "leva";
 import { Loader } from "../Loader";
+import About from "../../individual/About";
+import { Overlay } from "../../individual/Hero";
 
 const Composer = () => {
   return (
@@ -130,34 +134,26 @@ function PointEvent({ index, ...props }) {
   return <Point {...props} color="#ff0000"></Point>;
 }
 
-const Hero = () => {
+const HeroScene = () => {
   return (
     <>
-      {/* <Composer /> */}
+      <Composer />
       <Env />
       <Suspense fallback={<Loader />}>
-        <CameraRig>
-          {/* <OrbitControls /> */}
-          <Lights />
-          <Mesh />
-          <Particles />
-        </CameraRig>
+        <ScrollControls pages={6} damping={0.4}>
+          <Scroll>
+            <CameraRig>
+              {/* <OrbitControls /> */}
+              <Lights />
+              <Mesh />
+              <Particles />
+            </CameraRig>
+          </Scroll>
+          <Scroll html></Scroll>
+        </ScrollControls>
       </Suspense>
     </>
   );
 };
 
-const HeroCanvas = (props) => {
-  return (
-    <Canvas
-      shadows
-      dpr={[1, 2]}
-      camera={{ near: 0.1, far: 200, position: [0, 0, 4], fov: 45 }}
-      className="touch-none"
-    >
-      <Hero />
-    </Canvas>
-  );
-};
-
-export default HeroCanvas;
+export default HeroScene;

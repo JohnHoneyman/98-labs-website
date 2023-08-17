@@ -1,8 +1,10 @@
 import { useRef } from "react";
 import { easing } from "maath";
 import { useFrame } from "@react-three/fiber";
+import { useScroll } from "@react-three/drei";
 
 const CameraRig = ({ children }) => {
+  const scroll = useScroll();
   const group = useRef();
 
   useFrame((state, delta) => {
