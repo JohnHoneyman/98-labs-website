@@ -15,7 +15,7 @@ const aboutContent = [
 
 const About = () => {
   return (
-    <div className="flex items-center justify-center bg-gray-950 text-white mt-40">
+    <div className="flex items-center justify-center bg-gray-950 text-white">
       <ul className="w-11/12 relative">
         {aboutContent.map((item, index) => (
           <li

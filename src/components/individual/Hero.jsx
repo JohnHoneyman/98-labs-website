@@ -8,7 +8,7 @@ import About from "./About";
 const Hero = () => {
   return (
     <>
-      <section className="w-screen h-screen">
+      <section className="w-screen h-screen ">
         <div className="w-full h-full pointer-events-none">
           <div className="flex flex-col justify-center items-center h-full select-none">
             <div className="text-8xl text-white tracking-wide font-semibold uppercase">
