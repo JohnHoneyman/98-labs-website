@@ -39,20 +39,12 @@ const HeroScene = () => {
   const color = "#ffffff";
   return (
     <>
-      <HeroComposer />
+      <HeroComposer enabled={false} />
       <HeroEnv color={color} />
       <CameraRig>
         {/* <OrbitControls /> */}
         <HeroLights />
-        <Mobius
-          color="#fff"
-          scale={[3.5, 3.5, 3.5]}
-          stripLengthY={1}
-          rotation-x={4}
-          rotationSpeedX={0.001}
-          castShadow
-          receiveShadow
-        />
+        <Mobius />
         <HeroParticles color={"#ff0000"} />
       </CameraRig>
     </>

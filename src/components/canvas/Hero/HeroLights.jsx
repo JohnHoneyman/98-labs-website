@@ -5,7 +5,6 @@ import { useHelper } from "@react-three/drei";
 const HeroLights = () => {
   const light = useRef();
 
-  useHelper(light, THREE.PointLightHelper);
   return (
     <>
       <ambientLight intensity={0.05} />

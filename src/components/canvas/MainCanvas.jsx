@@ -27,9 +27,9 @@ const Scene = () => {
       <Html fullscreen as="div" portal={{ current: scrollData.fixed }}>
         <Hero />
       </Html>
-      <Html fullscreen position-y={-state_.viewport.height * 3.6}>
+      {/* <Html fullscreen position-y={-state_.viewport.height * 3.6}>
         <About />
-      </Html>
+      </Html> */}
     </group>
   );
 };
@@ -47,9 +47,9 @@ const MainCanvas = ({ scene }) => {
           {/* <Suspense fallback={<Loader />}> */}
           <ScrollControls pages={3} damping={0.2}>
             <Scene />
-            <Scroll>
-              <HeroScene />
-            </Scroll>
+            {/* <Scroll> */}
+            <HeroScene />
+            {/* </Scroll> */}
           </ScrollControls>
           {/* </Suspense> */}
         </Canvas>

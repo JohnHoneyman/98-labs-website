@@ -14,6 +14,8 @@ const Mobius = ({
   const mobiusGLTF = useGLTF("./gltf/mobius/mobius.gltf");
   const animations = useAnimations(mobiusGLTF.animations, mobiusGLTF.scene);
 
+  console.log(mobiusGLTF);
+
   useEffect(() => {
     const action = animations.actions.MobiusAction;
     action.timeScale = innerRotationSpeed;
