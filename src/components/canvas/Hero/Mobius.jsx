@@ -39,7 +39,7 @@ const Mobius = ({
     <primitive
       ref={mobius}
       object={mobiusGLTF.scene}
-      scale={1}
+      scale={[1, 1, 1]}
       position-y={-1}
     ></primitive>
   );
