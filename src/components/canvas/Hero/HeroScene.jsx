@@ -12,6 +12,7 @@ import {
   Points,
   Scroll,
   ScrollControls,
+  useHelper,
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
@@ -46,7 +47,7 @@ const Composer = () => {
       /> */}
       {/* <Noise opacity={0.1} blendFunction={BlendFunction.SCREEN} premultiply /> */}
 
-      {/* <DepthOfField focusDistance={0.04} focalLength={0.025} bokehScale={5} /> */}
+      <DepthOfField focusDistance={0.04} focalLength={0.025} bokehScale={5} />
     </EffectComposer>
   );
 };
@@ -132,13 +133,31 @@ const Env = ({ color = "#ff0000" }) => {
 };
 
 const LightFormers = ({ color = "#ff0000" }) => {
+  const { x, y, z } = useControls("bg-light", {
+    x: {
+      value: 2,
+      step: 1,
+    },
+    y: {
+      value: 2,
+      step: 1,
+    },
+    // y: {
+    //   value: 5,
+    //   step: 1,
+    // },
+    z: {
+      value: -9,
+      step: 1,
+    },
+  });
   return (
     <>
       <Lightformer
         color={color}
         intensity={0.75}
         rotation-x={Math.PI / 2}
-        position={[2, 5, -9]}
+        position={[x, y, z]}
         scale={[10, 10, 1]}
       />
     </>
@@ -146,10 +165,16 @@ const LightFormers = ({ color = "#ff0000" }) => {
 };
 
 const Lights = () => {
+  const light = useRef();
+
+  useHelper(light, THREE.PointLightHelper);
   return (
     <>
       <ambientLight intensity={0.05} />
       <spotLight intensity={0.2} position={[0, 0, 10]} />;
+      <pointLight ref={light} intensity={0.2} position={[-5, 0, 0]} />;
+      <pointLight ref={light} intensity={0.2} position={[-5, 0, 5]} />;
+      <pointLight ref={light} intensity={0.2} position={[5, 0, 5]} />;
     </>
   );
 };
@@ -194,7 +219,8 @@ const HeroScene = () => {
         <Lights />
         <Mesh />
         {/* <Mesh color={color} /> */}
-        <Particles color={color} />
+        {/* <Particles color={color} /> */}
+        <Particles color={"#ff0000"} />
       </CameraRig>
     </>
   );
