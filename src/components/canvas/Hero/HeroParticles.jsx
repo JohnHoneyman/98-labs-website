@@ -1,87 +1,98 @@
 import * as THREE from "three";
-import { Point, PointMaterial, Points } from "@react-three/drei";
+import { Float, Point, PointMaterial, Points } from "@react-three/drei";
 import { useControls } from "leva";
 
-// const HeroParticles = ({ color = "#ff0000" }) => {
-//   const positions = Array.from({ length: 10 }, () => [
-//     THREE.MathUtils.randFloatSpread(5),
-//     THREE.MathUtils.randFloatSpread(5),
-//     THREE.MathUtils.randFloatSpread(5),
-//   ]);
+const ParticleSystem = (count = 50) => {
+  const radius = 2;
+  const spread = 3;
+  const xOffset = -1;
+  const yOffset = -3;
 
-//   return (
-//     <>
-//       <Points limit={positions.length}>
-//         <PointMaterial
-//           vertexColors
-//           size={10}
-//           sizeAttenuation={false}
-//           depthWrite={false}
-//           toneMapped={false}
-//         />
-//         {positions.map((position, i) => (
-//           <Point key={i} index={i} position={position} color={color}></Point>
-//         ))}
-//       </Points>
-//     </>
-//   );
-// };6
-
-// TODO: Second
-
-// const Geometry = (particlesDistance = 10) => {
-//   const particlesGeometry = new THREE.SphereGeometry(1, 32, 32);
-//   const count = 20000;
-
-//   const positions = new Float32Array(count * 3);
-
-//   for (let i = 0; i < count * 3; i++) {
-//     positions[i] = (Math.random() - 0.5) * particlesDistance;
-//   }
-
-//   particlesGeometry.setAttribute(
-//     "position",
-//     new THREE.BufferAttribute(positions, 3)
-//   );
-
-//   return particlesGeometry;
-// };
-
-// const HeroParticles = ({ color = "#ff0000" }) => {
-//   const particlesMaterial = new THREE.PointsMaterial({
-//     color: 0xffffff,
-//     size: 0.1,
-//     sizeAttenuation: true, // true=big dots, false=small dots
-//   });
-
-//   return (
-//     <points
-//       position-z={-1}
-//       geometry={Geometry()}
-//       material={particlesMaterial}
-//     ></points>
-//   );
-// };
-
-// z = x^2
-// TODO: Third
-const ParticleSystem = (count = 20) => {
   return (
     <group>
       {Array.from({ length: count }).map((_, i) => {
+        const angle = (i / count) * Math.PI * 2;
+
+        const randomScale = Math.random() * 0.2;
+
+        const randomOffset = Math.random() * spread;
+        const randomRadius = radius + randomOffset;
+        const x = randomRadius * Math.cos(angle) + xOffset;
+        const y = randomRadius * Math.sin(angle * 1) + yOffset;
+        const z =
+          -randomRadius * (randomRadius < 0.1 ? 1 : -1) * Math.cos(angle) +
+          yOffset * 0.5;
+
         return (
-          <mesh
-            rotation-z={1.6}
-            scale={Math.random() * 0.5}
-            position={[0, -1, 0]}
-          >
-            <circleGeometry args={[1, 5]} />
-            <meshStandardMaterial
-              side={THREE.DoubleSide}
-              opacity={0.2}
-              transparent
-            />
-          </mesh>
+          <Float key={i} speed={0.8} rotationIntensity={1} floatIntensity={0.9}>
+            <mesh
+              rotation-z={1.6}
+              scale={randomScale}
+              position={[x, y, z]}
+              receiveShadow={false}
+              castShadow={false}
+            >
+              <circleGeometry args={[1, 5]} />
+
+              <meshStandardMaterial
+                toneMapped={false}
+                color={[3, 3, 3]}
+                emissive="white"
+                emissiveIntensity={0.05}
+                transparent
+                opacity={0.1}
+              />
+            </mesh>
+          </Float>
+        );
+      })}
+    </group>
+  );
+};
+
+const SmallParticleSystem = (count = 25) => {
+  const radius = 1;
+  const spread = 1;
+  const xOffset = 2;
+  const yOffset = -2;
+  const zOffset = 2;
+
+  return (
+    <group>
+      {Array.from({ length: count }).map((_, i) => {
+        const angle = (i / count) * Math.PI * 2;
+
+        const randomScale = Math.random() * 0.05;
+
+        const randomOffset = Math.random() * spread;
+        const randomRadius = radius + randomOffset;
+        const x = randomRadius * Math.cos(angle) + xOffset;
+        const y = randomRadius * Math.sin(angle * 1) + yOffset;
+        const z =
+          -randomRadius * (randomRadius < 0.1 ? 1 : -1) * Math.cos(angle) +
+          +zOffset;
+
+        return (
+          <Float key={i} speed={0.8} rotationIntensity={1} floatIntensity={0.9}>
+            <mesh
+              rotation-z={1.6}
+              scale={randomScale}
+              position={[x, y, z]}
+              receiveShadow={false}
+              castShadow={false}
+            >
+              <circleGeometry args={[1, 5]} />
+
+              <meshStandardMaterial
+                toneMapped={false}
+                color={[25, 3, 3]}
+                emissive="red"
+                emissiveIntensity={0.02}
+                transparent
+                opacity={0.05}
+              />
+            </mesh>
+          </Float>
         );
       })}
     </group>
@@ -89,7 +100,12 @@ const ParticleSystem = (count = 20) => {
 };
 
 const HeroParticles = () => {
-  return ParticleSystem();
+  return (
+    <group>
+      {ParticleSystem()}
+      {SmallParticleSystem()}
+    </group>
+  );
 };
 
 export default HeroParticles;

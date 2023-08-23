@@ -11,25 +11,20 @@ import {
 } from "@react-three/drei";
 import Hero from "../individual/Hero";
 import About from "../individual/About";
+import { Perf } from "r3f-perf";
 
 const Scene = () => {
   const state_ = useThree();
   const scrollData = useScroll();
-
-  useFrame(() => {
-    // console.log(state_, scrollData);
-    // console.log(scrollData.delta * 100);
-    // console.log(state_);
-  });
 
   return (
     <group>
       <Html fullscreen as="div" portal={{ current: scrollData.fixed }}>
         <Hero />
       </Html>
-      {/* <Html fullscreen position-y={-state_.viewport.height * 3.6}>
+      <Html fullscreen position-y={-state_.viewport.height * 3.6}>
         <About />
-      </Html> */}
+      </Html>
     </group>
   );
 };
@@ -45,11 +40,12 @@ const MainCanvas = ({ scene }) => {
           className="touch-none"
         >
           {/* <Suspense fallback={<Loader />}> */}
+          <Perf position="bottom-right" />
           <ScrollControls pages={3} damping={0.2}>
             <Scene />
-            {/* <Scroll> */}
-            <HeroScene />
-            {/* </Scroll> */}
+            <Scroll>
+              <HeroScene />
+            </Scroll>
           </ScrollControls>
           {/* </Suspense> */}
         </Canvas>

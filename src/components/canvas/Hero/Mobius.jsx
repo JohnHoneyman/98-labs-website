@@ -9,12 +9,11 @@ const Mobius = ({
   enableRotation = false,
   rotationX = 0.001,
   rotationY = 0.001,
+  ...props
 }) => {
   const mobius = useRef();
   const mobiusGLTF = useGLTF("./gltf/mobius/mobius.gltf");
   const animations = useAnimations(mobiusGLTF.animations, mobiusGLTF.scene);
-
-  console.log(mobiusGLTF);
 
   useEffect(() => {
     const action = animations.actions.MobiusAction;
@@ -25,6 +24,7 @@ const Mobius = ({
     material.color.set("white");
     material.metalness = 0;
     material.side = THREE.DoubleSide;
+    // material.wireframe = true;
   }, [animations]);
 
   useFrame((_, delta) => {
@@ -42,7 +42,7 @@ const Mobius = ({
       ref={mobius}
       object={mobiusGLTF.scene}
       scale={[1, 1, 1]}
-      position-y={-1}
+      {...props}
     ></primitive>
   );
 };

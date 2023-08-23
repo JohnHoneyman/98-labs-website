@@ -34,7 +34,8 @@ const LightFormers = ({ color = "#ff0000" }) => {
         color={color}
         intensity={0.75}
         rotation-x={Math.PI / 2}
-        position={[2, 2, -9]}
+        // position={[2, 2, -9]}
+        position={[2, 2, -7]}
         // position={[x, y, z]}
         scale={[10, 10, 1]}
       />

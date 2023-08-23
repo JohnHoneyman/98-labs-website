@@ -1,21 +1,24 @@
+import * as THREE from "three";
 import {
+  Bloom,
   DepthOfField,
   EffectComposer,
   Vignette,
 } from "@react-three/postprocessing";
 import { Noise } from "lamina";
+import { BlendFunction } from "postprocessing";
 
 const HeroComposer = ({
   enabled = false,
-  enableVignette = false,
-  enableNoise1 = false,
-  enableNoise2 = false,
-  enableDOF = false,
+  vignette = false,
+  noise1 = false,
+  noise2 = false,
+  dof = false,
 }) => {
   return (
     enabled && (
       <EffectComposer>
-        {enableVignette && (
+        {vignette && (
           <Vignette
             offset={0.2}
             darkness={0.8}
@@ -23,27 +26,30 @@ const HeroComposer = ({
             // blendFunction={BlendFunction.SOFT_LIGHT}
           />
         )}
-        {enableNoise1 && (
+        {noise1 && (
           <Noise
-            opacity={0.01}
+            opacity={1}
             blendFunction={THREE.AdditiveBlending}
             premultiply
           />
         )}
-        {enableNoise2 && (
+        {noise2 && (
           <Noise
             opacity={0.1}
-            blendFunction={BlendFunction.SCREEN}
+            blendFunction={BlendFunction.MULTIPLY}
             premultiply
           />
         )}
-        {enableDOF && (
-          <DepthOfField
-            focusDistance={0.04}
-            focalLength={0.025}
-            bokehScale={5}
-          />
+        {dof && (
+          <DepthOfField focusDistance={1} focalLength={0.025} bokehScale={3} />
         )}
+        <Bloom
+          mipmapBlur
+          intensity={0.1}
+          luminanceThreshold={0}
+          luminanceSmoothing={0.1}
+          height={100}
+        />
       </EffectComposer>
     )
   );
