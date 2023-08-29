@@ -2,11 +2,11 @@ import * as THREE from "three";
 import { Float, Point, PointMaterial, Points } from "@react-three/drei";
 import { useControls } from "leva";
 
-const ParticleSystem = (count = 50) => {
-  const radius = 2;
-  const spread = 3;
+const ParticleSystem = (count = 1000) => {
+  const radius = 4;
+  const spread = 10;
   const xOffset = -1;
-  const yOffset = -3;
+  const yOffset = -10;
 
   return (
     <group>
@@ -24,7 +24,12 @@ const ParticleSystem = (count = 50) => {
           yOffset * 0.5;
 
         return (
-          <Float key={i} speed={0.8} rotationIntensity={1} floatIntensity={0.9}>
+          <Float
+            key={i}
+            speed={(i * 0.001) % 1}
+            rotationIntensity={1}
+            floatIntensity={0.9}
+          >
             <mesh
               rotation-z={1.6}
               scale={randomScale}
@@ -50,10 +55,10 @@ const ParticleSystem = (count = 50) => {
   );
 };
 
-const SmallParticleSystem = (count = 25) => {
-  const radius = 1;
-  const spread = 1;
-  const xOffset = 2;
+const SmallParticleSystem = (count = 100) => {
+  const radius = 0.5;
+  const spread = 10;
+  const xOffset = 0;
   const yOffset = -2;
   const zOffset = 2;
 
@@ -73,7 +78,12 @@ const SmallParticleSystem = (count = 25) => {
           +zOffset;
 
         return (
-          <Float key={i} speed={0.8} rotationIntensity={1} floatIntensity={0.9}>
+          <Float
+            key={i}
+            speed={i % 4}
+            rotationIntensity={1}
+            floatIntensity={0.9}
+          >
             <mesh
               rotation-z={1.6}
               scale={randomScale}
