@@ -27,8 +27,9 @@ const Scene3D = () => {
 
   return (
     <>
-      <PostTransition />
-      <CameraRig>{scenes}</CameraRig>
+      <CameraRig>
+        <HeroScene />
+      </CameraRig>
     </>
   );
 };
@@ -60,15 +61,10 @@ const MainCanvas = () => {
           camera={{ near: 0.1, far: 200, position: [0, 0, 8], fov: 45 }}
           className="touch-none"
         >
-          <Suspense
-            fallback={
-              <Html>
-                <div></div>
-              </Html>
-            }
-          >
+          <Suspense fallback={<></>}>
             <Perf position="bottom-right" />
             <ScrollControls pages={3} damping={0.2}>
+              <PostTransition />
               <HtmlScene />
               <Scroll>
                 <Scene3D />
