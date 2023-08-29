@@ -20,6 +20,7 @@ import HeroScene from "./Hero/HeroScene";
 import AboutScene from "./About/AboutScene";
 
 import PostTransition from "./shared/Transition";
+import CameraRig from "./shared/CameraRig";
 
 const Scene3D = () => {
   const scenes = [<HeroScene />, <AboutScene />];
@@ -27,7 +28,7 @@ const Scene3D = () => {
   return (
     <>
       <PostTransition />
-      {scenes}
+      <CameraRig>{scenes}</CameraRig>
     </>
   );
 };
@@ -56,7 +57,7 @@ const MainCanvas = () => {
         <Canvas
           shadows
           dpr={[1, 2]}
-          camera={{ near: 0.1, far: 200, position: [0, 0, 4], fov: 45 }}
+          camera={{ near: 0.1, far: 200, position: [0, 0, 8], fov: 45 }}
           className="touch-none"
         >
           <Suspense

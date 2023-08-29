@@ -137,12 +137,10 @@ const AboutScene = () => {
       {/* <Composer /> */}
       <Env />
       <Suspense fallback={<Loader />}>
-        <CameraRig>
-          {/* <OrbitControls /> */}
-          <Lights />
-          <Mesh />
-          <Particles />
-        </CameraRig>
+        {/* <OrbitControls /> */}
+        <Lights />
+        <Mesh />
+        <Particles />
       </Suspense>
     </>
   );

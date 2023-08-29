@@ -41,12 +41,10 @@ const HeroScene = () => {
     <>
       <HeroComposer enabled noise2 />
       <HeroEnv color={color} />
-      <CameraRig>
-        {/* <OrbitControls /> */}
-        <HeroLights />
-        <Mobius scale={1} />
-        <HeroParticles color={"#ff0000"} />
-      </CameraRig>
+      {/* <OrbitControls /> */}
+      <HeroLights />
+      <Mobius scale={1} />
+      <HeroParticles color={"#ff0000"} />
     </>
   );
 };
