@@ -1,29 +1,18 @@
-import * as THREE from "three";
-import { Suspense, useEffect, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  Html,
-  Loader,
-  OrbitControls,
-  Scroll,
-  ScrollControls,
-  useScroll,
-} from "@react-three/drei";
+import { Suspense } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { Html, Scroll, ScrollControls, useScroll } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-
-import { Lethargy } from "lethargy";
 
 import Hero from "../individual/Hero";
 import About from "../individual/About";
 
 import HeroScene from "./Hero/HeroScene";
-import AboutScene from "./About/AboutScene";
 
 import PostTransition from "./shared/Transition";
 import CameraRig from "./shared/CameraRig";
 
 const Scene3D = () => {
-  const scenes = [<HeroScene />, <AboutScene />];
+  const scrollData = useScroll();
 
   return (
     <>
@@ -44,7 +33,6 @@ const HtmlScene = () => {
         <Hero />
       </Html>
       <Html fullscreen position-y={-state_.viewport.height * 5}>
-        {/* <Html fullscreen> */}
         <About />
       </Html>
     </group>
@@ -64,8 +52,8 @@ const MainCanvas = () => {
           <Suspense fallback={<></>}>
             <Perf position="bottom-right" />
             <ScrollControls pages={3} damping={0.2}>
+              {/* <HtmlScene /> */}
               <PostTransition />
-              <HtmlScene />
               <Scroll>
                 <Scene3D />
               </Scroll>

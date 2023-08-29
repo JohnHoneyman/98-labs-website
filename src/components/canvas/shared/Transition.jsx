@@ -6,10 +6,13 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { gsap } from "gsap";
 import { useControls } from "leva";
 
+import HeroScene from "../Hero/HeroScene";
+
 import vertex from "../shaders/transition/vertex";
 import fragment from "../shaders/transition/fragment";
 
 const PostTransition = () => {
+  const scenes = [<HeroScene />];
   const state = useThree();
   const plane = useRef();
   const geometry = new THREE.PlaneGeometry(
@@ -19,42 +22,17 @@ const PostTransition = () => {
     32
   );
 
-  const count = geometry.attributes.position.count;
-  const randoms = new Float32Array(count);
-
-  for (let i = 0; i < count; i++) {
-    randoms[i] = Math.random();
-  }
-
-  geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
-
-  // const progress = 0;
   const [progress, setProgress] = useState(0);
   const [uFreqX, uFreqY] = [10, 5];
-  const { uFrequencyX, uFrequencyY, uProgress, startProgress } = useControls(
-    "uFrequency",
-    {
-      uFrequencyX: {
-        value: uFreqX,
-        min: 0,
-        max: 10,
-        step: 0.1,
-      },
-      uFrequencyY: {
-        value: uFreqY,
-        min: 0,
-        max: 10,
-        step: 0.1,
-      },
-      uProgress: {
-        value: progress,
-        min: 0,
-        max: 1,
-        step: 0.01,
-      },
-      startProgress: false,
-    }
-  );
+  const { uProgress, startProgress } = useControls("uFrequency", {
+    uProgress: {
+      value: progress,
+      min: 0,
+      max: 1,
+      step: 0.01,
+    },
+    startProgress: false,
+  });
 
   const material = new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
@@ -62,7 +40,8 @@ const PostTransition = () => {
     fragmentShader: fragment,
     transparent: true,
     uniforms: {
-      uFrequency: { value: new THREE.Vector2(uFrequencyX, uFrequencyY) },
+      uTexture1: { value: null },
+      uTexture2: { value: null },
       uProgress: { value: uProgress },
     },
   });
