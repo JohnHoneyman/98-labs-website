@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-import { useEffect, useRef, useState } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal, useFrame, useThree } from "@react-three/fiber";
 
 import { gsap } from "gsap";
 import { useControls } from "leva";
@@ -10,6 +10,10 @@ import HeroScene from "../Hero/HeroScene";
 
 import vertex from "../shaders/transition/vertex";
 import fragment from "../shaders/transition/fragment";
+
+import texture1 from "../../../assets/texture/1.png";
+import texture2 from "../../../assets/texture/2.png";
+import { PerspectiveCamera, Plane } from "@react-three/drei";
 
 const PostTransition = () => {
   const scenes = [<HeroScene />];
@@ -40,23 +44,17 @@ const PostTransition = () => {
     fragmentShader: fragment,
     transparent: true,
     uniforms: {
-      uTexture1: { value: null },
-      uTexture2: { value: null },
+      uTexture1: { value: new THREE.TextureLoader().load(texture1) },
+      uTexture2: { value: new THREE.TextureLoader().load(texture2) },
+      uColor: { value: new THREE.Color(0xff0000) },
       uProgress: { value: uProgress },
     },
   });
 
-  const handleAnimation = () => {
-    gsap.to(progress, {
-      duration: 2,
-      value: 1,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        setProgress(progress);
-        console.log(progress);
-      },
-    });
-  };
+  // useFrame((_, delta) => {
+  //   if (startProgress) setProgress(progress < 1 ? progress + delta : 1);
+  //   else setProgress(progress > 0 ? progress - delta : 0);
+  // }, []);
 
   return (
     <>

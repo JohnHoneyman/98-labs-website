@@ -7,11 +7,14 @@ varying vec2 vUv;
 
 void main()
 {
-    // float strength = floor(1. + uProgress -vUv.y);
-    vec4 t = texture2D(uTexture1, vUv);
-    // float strength = step(vUv.y, uProgress);
+    vec4 t1 = texture2D(uTexture1, vUv);
+    vec4 t2 = texture2D(uTexture2, vUv);
+    float sweep = step(vUv.y, uProgress);
+    vec4 finalTexture = mix(t1, t2, sweep);
+    
+    gl_FragColor = finalTexture;
 
+    // float strength = step(vUv.y, uProgress);
     // gl_FragColor = vec4(vec3(strength),1.0);
-    gl_FragColor = vec4(vec3(t),1.0);
 }
 `;
