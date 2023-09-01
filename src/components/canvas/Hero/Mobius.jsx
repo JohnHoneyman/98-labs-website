@@ -43,7 +43,7 @@ const Mobius = ({
       object={mobiusGLTF.scene}
       scale={[1, 1, 1]}
       {...props}
-    ></primitive>
+    />
   );
 };
 
