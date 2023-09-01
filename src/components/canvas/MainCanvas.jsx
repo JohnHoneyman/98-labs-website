@@ -1,11 +1,18 @@
 import { Canvas } from "@react-three/fiber";
 import HeroThree from "./Hero/HeroThree";
+import { Perf } from "r3f-perf";
 
 const MainCanvas = () => {
   return (
     <>
       <div className="fixed h-full w-full">
-        <Canvas shadows dpr={[1, 2]} className="touch-none">
+        <Canvas
+          shadows
+          dpr={[1, 2]}
+          className="touch-none"
+          camera={{ position: [0, 0, 8] }}
+        >
+          <Perf position="bottom-right" />
           <HeroThree />
         </Canvas>
       </div>

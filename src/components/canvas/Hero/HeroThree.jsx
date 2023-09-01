@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { createPortal, extend, useFrame, useThree } from "@react-three/fiber";
 import {
   Environment,
@@ -60,52 +60,19 @@ import fragmentShader from "../shaders/transition/fragment";
 //   );
 // };
 
-const ImageFadeMaterial = shaderMaterial(
-  {
-    effectFactor: 1.2,
-    dispFactor: 0,
-    tex: undefined,
-    tex2: undefined,
-    disp: undefined,
-  },
-  `varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-    }`,
-  `varying vec2 vUv;
-    uniform sampler2D tex;
-    uniform sampler2D tex2;
-    uniform sampler2D disp;
-    uniform float _rot;
-    uniform float dispFactor;
-    uniform float effectFactor;
-    void main() {
-      vec4 _texture = texture2D(tex, vUv);
-      vec4 _texture2 = texture2D(tex2, vUv);
-      float sweep = step(vUv.y, dispFactor);
-      vec4 finalTexture = mix(_texture, _texture2, sweep);
-      gl_FragColor = finalTexture;
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>
-    }`
-);
-
-extend({ ImageFadeMaterial });
-
 const HeroThree = () => {
-  const { viewport } = useThree();
-
-  const { progress } = useControls({
-    progress: {
-      value: 0,
-      min: 0,
-      max: 1,
-    },
-  });
+  // const { progress } = useControls({
+  //   progress: {
+  //     value: 0,
+  //     min: 0,
+  //     max: 1,
+  //   },
+  // });
+  let progress = 0.0;
   const sphere = useRef();
   const sphere2 = useRef();
   const screenMesh = useRef();
+  const screenMat = useRef();
   const scene1 = new THREE.Scene();
   const scene2 = new THREE.Scene();
   const sky = useRef();
@@ -113,6 +80,9 @@ const HeroThree = () => {
 
   const renderTargetA = useFBO();
   const renderTargetB = useFBO();
+
+  const { viewport } = useThree();
+  const [hovered, setHovered] = useState(false);
 
   useFrame((state) => {
     const { gl, scene, camera, clock } = state;
@@ -135,9 +105,17 @@ const HeroThree = () => {
     gl.setRenderTarget(renderTargetB);
     gl.render(scene2, camera);
 
+    progress = THREE.MathUtils.lerp(progress, hovered ? 1.0 : 0.0, 0.075);
+
     screenMesh.current.material.uniforms.textureA.value = renderTargetA.texture;
     screenMesh.current.material.uniforms.textureB.value = renderTargetB.texture;
     screenMesh.current.material.uniforms.uProgress.value = progress;
+    // screenMesh.current.material.uniforms.uProgress.value = THREE.MathUtils.lerp(
+    //   screenMesh.current.material.uniforms.uProgress.value,
+    //   hovered ? 1.0 : 0.0,
+    //   0.075
+    // );
+
     gl.setRenderTarget(null);
   });
 
@@ -200,10 +178,22 @@ const HeroThree = () => {
           scene2
         )}
       </CameraRig>
-      <PerspectiveCamera ref={screenCamera} position={[0, 0, 8]} />
-      <mesh ref={screenMesh} frustumCulled={false}>
+      <PerspectiveCamera
+        ref={screenCamera}
+        position={[0, 0, 8]}
+        fov={45}
+        near={0.1}
+        far={200}
+      />
+      <mesh
+        ref={screenMesh}
+        frustumCulled={false}
+        onPointerEnter={(e) => setHovered(true)}
+        onPointerOut={(e) => setHovered(false)}
+      >
         <planeGeometry args={[viewport.width, viewport.height]} />
         <shaderMaterial
+          ref={screenMat}
           key={uuidv4()}
           uniforms={{
             textureA: {
