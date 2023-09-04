@@ -80,9 +80,9 @@ const HeroThree = () => {
     screenMesh.current.material.uniforms.textureB.value = renderTargetB.texture;
 
     screenMat.current.uProgress = THREE.MathUtils.lerp(
-      screenMat.current.uProgress,
-      hovered ? 1 : 0,
-      0.075
+      screenMat.current.uProgress ? screenMat.current.uProgress : 0,
+      hovered ? 1.0 : 0.0,
+      0.1
     );
 
     gl.setRenderTarget(null);
