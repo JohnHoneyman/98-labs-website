@@ -9,8 +9,6 @@ import {
   useFBO,
 } from "@react-three/drei";
 
-import { v4 as uuidv4 } from "uuid";
-
 import CameraRig from "../shared/CameraRig";
 
 import vertexShader from "../shaders/transition/vertex";
@@ -159,7 +157,7 @@ const HeroThree = () => {
         onPointerLeave={() => setHovered(false)}
       >
         <planeGeometry args={[viewport.width, viewport.height]} />
-        <swipeShaderMaterial ref={screenMat} key={uuidv4()} />
+        <swipeShaderMaterial ref={screenMat} />
       </mesh>
     </>
   );
