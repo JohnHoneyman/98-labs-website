@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import HeroThree from "./Hero/HeroThree";
 import { Perf } from "r3f-perf";
+import { Scroll, ScrollControls } from "@react-three/drei";
 
 const MainCanvas = () => {
   return (
@@ -9,11 +10,13 @@ const MainCanvas = () => {
         <Canvas
           shadows
           dpr={[1, 2]}
-          className="touch-none"
+          // className="touch-none"
           camera={{ position: [0, 0, 8] }}
         >
-          <Perf position="bottom-right" />
-          <HeroThree />
+          {/* <Perf position="bottom-right" /> */}
+          <ScrollControls pages={3} damping={0.15}>
+            <HeroThree />
+          </ScrollControls>
         </Canvas>
       </div>
     </>

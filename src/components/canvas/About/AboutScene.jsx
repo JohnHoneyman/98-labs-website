@@ -97,7 +97,7 @@ const Lights = () => {
   return (
     <>
       <ambientLight intensity={0.05} />
-      <spotLight intensity={0.2} position={[0, 0, 10]} />;
+      <spotLight intensity={0.2} position={[0, 0, 10]} />
     </>
   );
 };

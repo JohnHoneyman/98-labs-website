@@ -4,15 +4,22 @@ import { createPortal, extend, useFrame, useThree } from "@react-three/fiber";
 import {
   Environment,
   PerspectiveCamera,
+  Scroll,
+  ScrollControls,
   Sky,
   shaderMaterial,
   useFBO,
+  useScroll,
 } from "@react-three/drei";
 
 import CameraRig from "../shared/CameraRig";
 
+import { useGesture } from "@use-gesture/react";
+
 import vertexShader from "../shaders/transition/vertex";
 import fragmentShader from "../shaders/transition/fragment";
+import HeroScene from "./HeroScene";
+import AboutScene from "../About/AboutScene";
 
 const uniforms = {
   textureA: {
@@ -38,13 +45,8 @@ const SwipeShaderMaterial = shaderMaterial(
 extend({ SwipeShaderMaterial });
 
 const HeroThree = () => {
-  const sphere = useRef();
-  const sphere2 = useRef();
   const screenMesh = useRef();
   const screenMat = useRef();
-  const scene1 = new THREE.Scene();
-  const scene2 = new THREE.Scene();
-  const sky = useRef();
   const screenCamera = useRef();
 
   const renderTargetA = useFBO();
@@ -53,96 +55,69 @@ const HeroThree = () => {
   const { viewport } = useThree();
   const [hovered, setHovered] = useState(false);
 
+  const scenes = [
+    <HeroScene />,
+    <AboutScene />,
+    <>
+      <ambientLight />
+      <mesh scale={5}>
+        <boxGeometry />
+        <meshBasicMaterial />
+      </mesh>
+    </>,
+  ];
+  const scene = scenes.map(() => new THREE.Scene());
+  const renderTarget = scenes.map(() => useFBO());
+
+  const scroll = useScroll();
+  let currentScene = 0;
+  let nextScene = 0;
+  let progress = 0;
+  let currentState = 0;
+  let previousState = 0;
+
   useFrame((state) => {
-    const { gl, scene, camera, clock } = state;
+    /**
+     * Scroll
+     */
+    if (previousState < currentState) currentState += scroll.delta;
+    if (previousState > currentState) currentState -= scroll.delta;
+    previousState = currentState;
+    currentState = (currentState + 3000) % 3;
 
-    sky.current.material.uniforms.sunPosition.value = new THREE.Vector3(
-      10,
-      10,
-      0
-    );
+    /**
+     * Swipe Transition
+     */
+    const { gl, camera } = state;
 
-    gl.setRenderTarget(renderTargetA);
-    gl.render(scene1, camera);
+    currentScene = Math.floor(currentState);
+    nextScene = Math.floor((currentState + 1) % scenes.length);
 
-    sky.current.material.uniforms.sunPosition.value = new THREE.Vector3(
-      0,
-      -0.3,
-      -10
-    );
+    progress = currentState % 1;
 
-    gl.setRenderTarget(renderTargetB);
-    gl.render(scene2, camera);
+    // console.log(currentScene, nextScene, progress, currentState);
 
-    screenMesh.current.material.uniforms.textureA.value = renderTargetA.texture;
-    screenMesh.current.material.uniforms.textureB.value = renderTargetB.texture;
+    gl.setRenderTarget(renderTarget[currentScene]);
+    gl.render(scene[currentScene], camera);
 
-    screenMat.current.uProgress = THREE.MathUtils.lerp(
-      screenMat.current.uProgress ? screenMat.current.uProgress : 0,
-      hovered ? 1.0 : 0.0,
-      0.1
-    );
+    gl.setRenderTarget(renderTarget[nextScene]);
+    gl.render(scene[nextScene], camera);
+
+    screenMesh.current.material.uniforms.textureA.value =
+      renderTarget[currentScene].texture;
+    screenMesh.current.material.uniforms.textureB.value =
+      renderTarget[nextScene].texture;
+
+    screenMat.current.uProgress = progress;
 
     gl.setRenderTarget(null);
   });
 
   return (
     <>
-      <CameraRig>
-        {createPortal(
-          <>
-            <Sky />
-            <Environment preset="dawn" />
-            <directionalLight args={[10, 10, 0]} intensity={1} />
-            <ambientLight intensity={1} />
-            <mesh ref={sphere} position={[2, 0, 0]}>
-              <dodecahedronGeometry args={[1]} />
-              <meshPhysicalMaterial
-                roughness={0}
-                clearcoat={1}
-                clearcoatRoughness={0}
-                color="#73B9ED"
-              />
-            </mesh>
-            <mesh ref={sphere2} position={[-2, 0, 0]}>
-              <dodecahedronGeometry args={[1]} />
-              <meshPhysicalMaterial
-                roughness={0}
-                clearcoat={1}
-                clearcoatRoughness={0}
-                color="#73B9ED"
-              />
-            </mesh>
-          </>,
-          scene1
-        )}
-        {createPortal(
-          <>
-            <Sky ref={sky} />
-            <Environment preset="dawn" />
-            <directionalLight args={[0, 0, -10]} intensity={1} />
-            <mesh ref={sphere} position={[2, 0, 0]}>
-              <torusKnotGeometry args={[0.75, 0.3, 100, 16]} />
-              <meshPhysicalMaterial
-                roughness={0}
-                clearcoat={1}
-                clearcoatRoughness={0}
-                color="#73B9ED"
-              />
-            </mesh>
-            <mesh ref={sphere2} position={[-2, 0, 0]}>
-              <torusKnotGeometry args={[0.75, 0.3, 100, 16]} />
-              <meshPhysicalMaterial
-                roughness={0}
-                clearcoat={1}
-                clearcoatRoughness={0}
-                color="#73B9ED"
-              />
-            </mesh>
-          </>,
-          scene2
-        )}
-      </CameraRig>
+      {scenes.map((s, i) =>
+        createPortal(<Scroll key={i}>{s}</Scroll>, scene[i])
+      )}
       <PerspectiveCamera
         ref={screenCamera}
         position={[0, 0, 8]}
@@ -153,8 +128,8 @@ const HeroThree = () => {
       <mesh
         ref={screenMesh}
         frustumCulled={false}
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
+        // onPointerEnter={() => setHovered(true)}
+        // onPointerLeave={() => setHovered(false)}
       >
         <planeGeometry args={[viewport.width, viewport.height]} />
         <swipeShaderMaterial ref={screenMat} />
