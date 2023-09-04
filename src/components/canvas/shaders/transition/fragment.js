@@ -14,6 +14,8 @@ void main()
     
     gl_FragColor = finalTexture;
 
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
     // float strength = step(vUv.y, uProgress);
     // gl_FragColor = vec4(vec3(strength),1.0);
 }
