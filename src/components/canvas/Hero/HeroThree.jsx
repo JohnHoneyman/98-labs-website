@@ -2,19 +2,12 @@ import * as THREE from "three";
 import { useRef, useState } from "react";
 import { createPortal, extend, useFrame, useThree } from "@react-three/fiber";
 import {
-  Environment,
   PerspectiveCamera,
   Scroll,
-  ScrollControls,
-  Sky,
   shaderMaterial,
   useFBO,
   useScroll,
 } from "@react-three/drei";
-
-import CameraRig from "../shared/CameraRig";
-
-import { useGesture } from "@use-gesture/react";
 
 import vertexShader from "../shaders/transition/vertex";
 import fragmentShader from "../shaders/transition/fragment";
@@ -49,11 +42,7 @@ const HeroThree = () => {
   const screenMat = useRef();
   const screenCamera = useRef();
 
-  const renderTargetA = useFBO();
-  const renderTargetB = useFBO();
-
   const { viewport } = useThree();
-  const [hovered, setHovered] = useState(false);
 
   const scenes = [
     <HeroScene />,
@@ -74,22 +63,31 @@ const HeroThree = () => {
   let nextScene = 0;
   let progress = 0;
   let currentState = 0;
-  let previousState = 0;
 
   useFrame((state) => {
     /**
      * Scroll
      */
-    if (previousState < currentState) currentState += scroll.delta;
-    if (previousState > currentState) currentState -= scroll.delta;
-    previousState = currentState;
-    currentState = (currentState + 3000) % 3;
+    if (currentState % 1 > 0.25) {
+      currentState = THREE.MathUtils.lerp(
+        currentState,
+        Math.floor(currentState) + 1,
+        0.05
+      );
+    } else {
+      currentState = THREE.MathUtils.lerp(
+        currentState,
+        Math.floor(currentState),
+        0.05
+      );
+    }
+    currentState += scroll.delta;
+    currentState = (currentState + scenes.length) % scenes.length;
 
     /**
      * Swipe Transition
      */
     const { gl, camera } = state;
-
     currentScene = Math.floor(currentState);
     nextScene = Math.floor((currentState + 1) % scenes.length);
 
