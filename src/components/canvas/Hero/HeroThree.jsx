@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal, extend, useFrame, useThree } from "@react-three/fiber";
 import {
   PerspectiveCamera,
@@ -9,10 +9,13 @@ import {
   useScroll,
 } from "@react-three/drei";
 
+import VirtualScroll from "virtual-scroll";
+
 import vertexShader from "../shaders/transition/vertex";
 import fragmentShader from "../shaders/transition/fragment";
 import HeroScene from "./HeroScene";
 import AboutScene from "../About/AboutScene";
+import CameraRig from "../shared/CameraRig";
 
 const uniforms = {
   textureA: {
@@ -58,31 +61,47 @@ const HeroThree = () => {
   const scene = scenes.map(() => new THREE.Scene());
   const renderTarget = scenes.map(() => useFBO());
 
-  const scroll = useScroll();
   let currentScene = 0;
   let nextScene = 0;
   let progress = 0;
   let currentState = 0;
+  let scrollDelta = 0;
+
+  const scroller = new VirtualScroll();
+  scroller.on((e) => {
+    console.log("SCROLLED!");
+    scrollDelta = e.deltaY;
+  });
 
   useFrame((state) => {
     /**
      * Scroll
      */
-    if (currentState % 1 > 0.25) {
+    if (
+      (currentState % 1 > 0.3 && scrollDelta <= 0) ||
+      (currentState % 1 > 0.7 && scrollDelta > -1)
+    )
       currentState = THREE.MathUtils.lerp(
         currentState,
         Math.floor(currentState) + 1,
         0.05
       );
-    } else {
+    else if (
+      (currentState % 1 < 0.7 && scrollDelta >= 0) ||
+      (currentState % 1 < 0.3 && scrollDelta < 1)
+    )
       currentState = THREE.MathUtils.lerp(
         currentState,
         Math.floor(currentState),
         0.05
       );
-    }
-    currentState += scroll.delta;
+
+    currentState -= scrollDelta / 3000;
     currentState = (currentState + scenes.length) % scenes.length;
+
+    if (scrollDelta <= 0)
+      scrollDelta = THREE.MathUtils.lerp(scrollDelta, 0, 0.1);
+    else scrollDelta = THREE.MathUtils.lerp(scrollDelta, 0, 0.1);
 
     /**
      * Swipe Transition
@@ -93,7 +112,7 @@ const HeroThree = () => {
 
     progress = currentState % 1;
 
-    // console.log(currentScene, nextScene, progress, currentState);
+    // console.log(currentScene, nextScene, progress, currentState, scroll.offset);
 
     gl.setRenderTarget(renderTarget[currentScene]);
     gl.render(scene[currentScene], camera);
@@ -114,7 +133,14 @@ const HeroThree = () => {
   return (
     <>
       {scenes.map((s, i) =>
-        createPortal(<Scroll key={i}>{s}</Scroll>, scene[i])
+        createPortal(
+          <group onPointerEnter={() => {}}>
+            <Scroll>
+              <CameraRig>{s}</CameraRig>
+            </Scroll>
+          </group>,
+          scene[i]
+        )
       )}
       <PerspectiveCamera
         ref={screenCamera}

@@ -14,7 +14,7 @@ const MainCanvas = () => {
           camera={{ position: [0, 0, 8] }}
         >
           {/* <Perf position="bottom-right" /> */}
-          <ScrollControls distance={1} damping={0.05}>
+          <ScrollControls damping={0.05}>
             <HeroThree />
           </ScrollControls>
         </Canvas>
