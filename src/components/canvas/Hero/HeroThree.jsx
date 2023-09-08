@@ -135,9 +135,7 @@ const HeroThree = () => {
       {scenes.map((s, i) =>
         createPortal(
           <group onPointerEnter={() => {}}>
-            <Scroll>
-              <CameraRig>{s}</CameraRig>
-            </Scroll>
+            <CameraRig>{s}</CameraRig>
           </group>,
           scene[i]
         )
