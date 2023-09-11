@@ -13,7 +13,7 @@ const MainCanvas = () => {
           // className="touch-none"
           camera={{ position: [0, 0, 8] }}
         >
-          {/* <Perf position="bottom-right" /> */}
+          <Perf position="bottom-right" />
           <ScrollControls damping={0.05}>
             <HeroThree />
           </ScrollControls>

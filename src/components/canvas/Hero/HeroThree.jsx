@@ -69,7 +69,6 @@ const HeroThree = () => {
 
   const scroller = new VirtualScroll();
   scroller.on((e) => {
-    console.log("SCROLLED!");
     scrollDelta = e.deltaY;
   });
 
@@ -78,30 +77,29 @@ const HeroThree = () => {
      * Scroll
      */
     if (
-      (currentState % 1 > 0.3 && scrollDelta <= 0) ||
-      (currentState % 1 > 0.7 && scrollDelta > -1)
+      (currentState % 1 > 0.2 && scrollDelta <= 0) ||
+      (currentState % 1 > 0.8 && scrollDelta > -1)
     )
       currentState = THREE.MathUtils.lerp(
         currentState,
         Math.floor(currentState) + 1,
-        0.05
+        0.075
       );
     else if (
-      (currentState % 1 < 0.7 && scrollDelta >= 0) ||
-      (currentState % 1 < 0.3 && scrollDelta < 1)
+      (currentState % 1 < 0.8 && scrollDelta >= 0) ||
+      (currentState % 1 < 0.2 && scrollDelta < 1)
     )
       currentState = THREE.MathUtils.lerp(
         currentState,
         Math.floor(currentState),
-        0.05
+        0.075
       );
 
-    currentState -= scrollDelta / 3000;
+    currentState -= scrollDelta / 4000;
     currentState = (currentState + scenes.length) % scenes.length;
 
-    if (scrollDelta <= 0)
+    if (scrollDelta !== 0)
       scrollDelta = THREE.MathUtils.lerp(scrollDelta, 0, 0.1);
-    else scrollDelta = THREE.MathUtils.lerp(scrollDelta, 0, 0.1);
 
     /**
      * Swipe Transition
@@ -134,7 +132,7 @@ const HeroThree = () => {
     <>
       {scenes.map((s, i) =>
         createPortal(
-          <group onPointerEnter={() => {}}>
+          <group onPointerOver={() => {}}>
             <CameraRig>{s}</CameraRig>
           </group>,
           scene[i]
@@ -147,12 +145,7 @@ const HeroThree = () => {
         near={0.1}
         far={200}
       />
-      <mesh
-        ref={screenMesh}
-        frustumCulled={false}
-        // onPointerEnter={() => setHovered(true)}
-        // onPointerLeave={() => setHovered(false)}
-      >
+      <mesh ref={screenMesh} frustumCulled={false}>
         <planeGeometry args={[viewport.width, viewport.height]} />
         <swipeShaderMaterial ref={screenMat} />
       </mesh>
