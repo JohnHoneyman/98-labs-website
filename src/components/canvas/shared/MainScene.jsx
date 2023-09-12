@@ -1,21 +1,15 @@
 import * as THREE from "three";
 import { useEffect, useRef, useState } from "react";
 import { createPortal, extend, useFrame, useThree } from "@react-three/fiber";
-import {
-  PerspectiveCamera,
-  Scroll,
-  shaderMaterial,
-  useFBO,
-  useScroll,
-} from "@react-three/drei";
+import { PerspectiveCamera, shaderMaterial, useFBO } from "@react-three/drei";
 
 import VirtualScroll from "virtual-scroll";
 
 import vertexShader from "../shaders/transition/vertex";
 import fragmentShader from "../shaders/transition/fragment";
-import HeroScene from "./HeroScene";
+import HeroScene from "../Hero/HeroScene";
 import AboutScene from "../About/AboutScene";
-import CameraRig from "../shared/CameraRig";
+import CameraRig from "./CameraRig";
 
 const uniforms = {
   textureA: {

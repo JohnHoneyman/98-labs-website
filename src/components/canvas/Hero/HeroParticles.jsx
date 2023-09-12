@@ -1,120 +1,98 @@
 import * as THREE from "three";
-import { Float, Point, PointMaterial, Points } from "@react-three/drei";
-import { useControls } from "leva";
 
-const ParticleSystem = (count = 1000) => {
-  const radius = 4;
-  const spread = 10;
-  const xOffset = -1;
-  const yOffset = -10;
+import vertexShader from "../shaders/hero/vertex";
+import fragmentShader from "../shaders/hero/fragment";
+import circleImg from "../../../assets/circle.png";
+import { useFrame, useLoader } from "@react-three/fiber";
+import { useCallback, useMemo, useRef } from "react";
+import { OrbitControls } from "@react-three/drei";
 
-  return (
-    <group>
-      {Array.from({ length: count }).map((_, i) => {
-        const angle = (i / count) * Math.PI * 2;
+const Points = () => {
+  const imgTex = useLoader(THREE.TextureLoader, circleImg);
 
-        const randomScale = Math.random() * 0.2;
+  const bufferRef = useRef();
 
-        const randomOffset = Math.random() * spread;
-        const randomRadius = radius + randomOffset;
-        const x = randomRadius * Math.cos(angle) + xOffset;
-        const y = randomRadius * Math.sin(angle * 1) + yOffset;
-        const z =
-          -randomRadius * (randomRadius < 0.1 ? 1 : -1) * Math.cos(angle) +
-          yOffset * 0.5;
-
-        return (
-          <Float
-            key={i}
-            speed={(i * 0.001) % 1}
-            rotationIntensity={1}
-            floatIntensity={0.9}
-          >
-            <mesh
-              rotation-z={1.6}
-              scale={randomScale}
-              position={[x, y, z]}
-              receiveShadow={false}
-              castShadow={false}
-            >
-              <circleGeometry args={[1, 5]} />
-
-              <meshStandardMaterial
-                toneMapped={false}
-                color={[3, 3, 3]}
-                emissive="white"
-                emissiveIntensity={0.05}
-                transparent
-                opacity={0.1}
-              />
-            </mesh>
-          </Float>
-        );
-      })}
-    </group>
+  let t = 0;
+  let f = 0.0002;
+  let a = 3; // Amplitude
+  // const graph = useCallback(
+  //   (x, z) => {
+  //     return Math.sin(f * (x ** 2 + z ** 2 + t)) * a;
+  //   },
+  //   [t, f, a]
+  // );
+  const graph = useCallback(
+    (x, z) => {
+      return 2 ** Math.sin(f * (x ** 2 + z ** 2 + t)) * a;
+    },
+    [t, f, a]
   );
-};
 
-const SmallParticleSystem = (count = 100) => {
-  const radius = 0.5;
-  const spread = 10;
-  const xOffset = 0;
-  const yOffset = -2;
-  const zOffset = 2;
+  const count = 200;
+  const sep = 3;
+  let positions = useMemo(() => {
+    let positions = [];
+
+    for (let xi = 0; xi < count; xi++) {
+      for (let zi = 0; zi < count; zi++) {
+        let x = sep * (xi - count / 2);
+        let z = sep * (zi - count / 2) + 50;
+        // let y = graph(x, z);
+        let y = -20;
+        positions.push(x, y, z);
+      }
+    }
+    return new Float32Array(positions);
+  }, [count, sep, graph]);
+
+  useFrame((_, delta) => {
+    t += delta * 500;
+    const positions = bufferRef.current.array;
+
+    let i = 0;
+    for (let xi = 0; xi < count; xi++) {
+      for (let zi = 0; zi < count; zi++) {
+        let x = sep * (xi - count / 2);
+        let z = sep * (zi - count / 2) + 50;
+
+        positions[i + 1] = graph(x, z) - 20;
+        i += 3;
+      }
+    }
+
+    bufferRef.current.needsUpdate = true;
+  });
 
   return (
-    <group>
-      {Array.from({ length: count }).map((_, i) => {
-        const angle = (i / count) * Math.PI * 2;
-
-        const randomScale = Math.random() * 0.05;
-
-        const randomOffset = Math.random() * spread;
-        const randomRadius = radius + randomOffset;
-        const x = randomRadius * Math.cos(angle) + xOffset;
-        const y = randomRadius * Math.sin(angle * 1) + yOffset;
-        const z =
-          -randomRadius * (randomRadius < 0.1 ? 1 : -1) * Math.cos(angle) +
-          +zOffset;
-
-        return (
-          <Float
-            key={i}
-            speed={i % 4}
-            rotationIntensity={1}
-            floatIntensity={0.9}
-          >
-            <mesh
-              rotation-z={1.6}
-              scale={randomScale}
-              position={[x, y, z]}
-              receiveShadow={false}
-              castShadow={false}
-            >
-              <circleGeometry args={[1, 5]} />
-
-              <meshStandardMaterial
-                toneMapped={false}
-                color={[25, 3, 3]}
-                emissive="red"
-                emissiveIntensity={0.02}
-                transparent
-                opacity={0.05}
-              />
-            </mesh>
-          </Float>
-        );
-      })}
-    </group>
+    <points>
+      <bufferGeometry attach="geometry">
+        <bufferAttribute
+          ref={bufferRef}
+          attach={"attributes-position"}
+          array={positions}
+          count={positions.length / 3}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        attach="material"
+        map={imgTex}
+        color={0xffffff}
+        size={1}
+        sizeAttenuation
+        transparent={true}
+        alphaTest={0.1}
+        opacity={0.5}
+      />
+    </points>
   );
 };
 
 const HeroParticles = () => {
   return (
-    <group>
-      {ParticleSystem()}
-      {SmallParticleSystem()}
-    </group>
+    <>
+      <Points />
+    </>
   );
 };
 

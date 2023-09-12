@@ -38,12 +38,7 @@ const Mobius = ({
   });
 
   return (
-    <primitive
-      ref={mobius}
-      object={mobiusGLTF.scene}
-      scale={[1, 1, 1]}
-      {...props}
-    />
+    <primitive ref={mobius} object={mobiusGLTF.scene} scale={1} {...props} />
   );
 };
 

@@ -4,9 +4,9 @@ import MainCanvas from "../components/canvas/MainCanvas";
 
 const Home = () => {
   return (
-    // <Layout>
-    <MainCanvas />
-    // </Layout>
+    <Layout>
+      <MainCanvas />
+    </Layout>
   );
 };
 
